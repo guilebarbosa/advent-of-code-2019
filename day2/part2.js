@@ -17,6 +17,15 @@ function run(program) {
   return program[0];
 }
 
-const program = init(12, 2);
+function findNounAndVerb() {
+  for (let noun = 0; noun <= 99; noun++) {
+    for (let verb = 0; verb <= 99; verb++) {
+      const program = init(noun, verb);
+      const output = run(program);
+      if (output === 19690720)
+        return 100 * noun + verb;
+    }
+  }
+}
 
-console.log(run(program))
+console.log(findNounAndVerb());
