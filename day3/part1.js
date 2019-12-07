@@ -18,7 +18,6 @@ function createWire(commands = []) {
       return wire.concat(line);
     }, [[0, 0]])
     .slice(1)
-    .map(coordinate => coordinate.join())
 }
 
 function createLine(initialCoordinate, command) {
@@ -36,7 +35,7 @@ function createLine(initialCoordinate, command) {
     .slice(1);
 }
 
-// Take steps in increments of 1
+// take steps in increments of 1
 function takeStep([x, y], direction) {
   switch (direction) {
     case 'U':
@@ -50,23 +49,31 @@ function takeStep([x, y], direction) {
   }
 }
 
-function getIntersections([wire1, wire2]) {
-  return wire2.reduce((list, coordinate) => {
-    if (wire1.includes(coordinate)) {
-      list.push(coordinate);
+function getIntersections(wires) {
+  // create a Set for each wire, with values as strings
+  const [wire1, wire2] = wires.map(wire => {
+    const asString = wire.map(coordinate => coordinate.join());
+    return new Set(asString);
+  });
+  const intersections = [];
+
+  for (coordinate of wire1) {
+    if (wire2.has(coordinate)) {
+      intersections.push(coordinate);
     }
-    return list;
-  }, [])
+  }
+
+  return intersections;
 }
 
 function findClosestIntersection (intersections) {
   return intersections.reduce((smallest, intersection) => {
     const coordinate = intersection.split(',').map(Number);
-    const distance = manhattanDistance([0, 0], coordinate);
+    const distance = getDistance(coordinate);
     return Math.min(smallest, distance);
   }, Infinity)
 }
 
-function manhattanDistance([x1, y1], [x2, y2]) {
-  return Math.abs(x2 - x1) + Math.abs(y2 - y1);
+function getDistance([x, y]) {
+  return Math.abs(x) + Math.abs(y);
 }
