@@ -7,8 +7,8 @@ const wires = input
   .map(createWire)
 const intersections = getIntersections(wires);
 const closest = findClosestIntersection(intersections);
-
-console.log(closest);
+const shortest = findShortestIntersection(wires, intersections);
+console.log(closest, shortest);
 
 function createWire(commands = []) {
   return commands
@@ -71,6 +71,18 @@ function findClosestIntersection (intersections) {
     const coordinate = intersection.split(',').map(Number);
     const distance = getDistance(coordinate);
     return Math.min(smallest, distance);
+  }, Infinity)
+}
+
+function findShortestIntersection (wires, intersections) {
+  const [wire1, wire2] = wires.map(wire => {
+    return wire.map(coordinate => coordinate.join());
+  });
+  return intersections.reduce((shortest, intersection) => {
+    const step1 = wire1.indexOf(intersection) + 1;
+    const step2 = wire2.indexOf(intersection) + 1;
+
+    return Math.min(shortest, step1 + step2);
   }, Infinity)
 }
 
